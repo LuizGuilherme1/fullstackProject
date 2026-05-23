@@ -13,42 +13,49 @@ import java.util.Arrays;
 
 @Configuration
 public class SecurityConfig {
+    
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http)
-        throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-            http
-              .csrf(csrf -> csrf.disable())
-              .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/auth/**", "/h2-console/**")
-                .permitAll()
-                .anyRequest()
-                .authenticated()
-              )
-              .headers(headers -> headers
-                .frameOptions(frame -> frame.disable())
-              )
-              .httpBasic(Customizer.withDefaults());
+        http
+          
+          .cors(Customizer.withDefaults()) 
+          .csrf(csrf -> csrf.disable())
+          .authorizeHttpRequests(auth -> auth
+            .requestMatchers("/auth/**", "/h2-console/**", "/error")
+            .permitAll()
+            .anyRequest()
+            .authenticated()
+          )
+          .headers(headers -> headers
+            .frameOptions(frame -> frame.disable())
+          )
+          .httpBasic(Customizer.withDefaults());
 
-            return http.build();
+        return http.build();
     }
 
+    
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
-      CorsConfiguration configuration = new CorsConfiguration();
-
-      configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173", "http://127.0.0.1:5173"));
-
-      configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD"));
-
-      configuration.setAllowedHeaders(Arrays.asList("*"));
-
-      configuration.setAllowCredentials(true);
-
-      UrlBasedCorsConfigurationSource source=new UrlBasedCorsConfigurationSource();
-
-      source.registerCorsConfiguration("/**", configuration);
-
-      return source;
+        CorsConfiguration configuration = new CorsConfiguration();
+        
+    
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173", "http://127.0.0.1:5173"));
+        
+        
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD"));
+        
+        
+        configuration.setAllowedHeaders(Arrays.asList("*"));
+        
+        
+        configuration.setAllowCredentials(true);
+        
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+       
+        source.registerCorsConfiguration("/**", configuration); 
+        
+        return source;
     }
 }
